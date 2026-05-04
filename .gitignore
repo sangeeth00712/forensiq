@@ -1,0 +1,33 @@
+# Virtual environment — never commit this
+venv/
+
+# Environment variables — API keys live here, NEVER commit
+.env
+
+# Uploaded files — may contain sensitive forensic data
+uploads/
+outputs/
+cache/
+logs/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Test coverage
+.coverage
+htmlcov/
+
+# Mac system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
