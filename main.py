@@ -8,6 +8,7 @@ from core.validator import validate_pcap_file, ValidationError
 from core.parser import parse_pcap, PcapParseError
 from core.models import AnalysisReport
 from detection.engine import DetectionEngine
+from enrichment.enricher import Enricher
 
 logger = get_logger(__name__)
 
@@ -64,6 +65,10 @@ def run_analysis(pcap_path: str) -> None:
     analysis_end = datetime.now()
 
     print()
+
+    # Enrich findings with threat intel
+    enricher = Enricher()
+    findings = enricher.enrich_all(findings)
 
     # Build report
     report = AnalysisReport(
