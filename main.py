@@ -9,6 +9,7 @@ from core.parser import parse_pcap, PcapParseError
 from core.models import AnalysisReport
 from detection.engine import DetectionEngine
 from enrichment.enricher import Enricher
+from ai.explainer import LLMExplainer, Guardrails
 
 logger = get_logger(__name__)
 
@@ -70,6 +71,14 @@ def run_analysis(pcap_path: str) -> None:
     enricher = Enricher()
     findings = enricher.enrich_all(findings)
 
+    # Generate LLM explanations (optional, requires GROQ_API_KEY)
+    explainer = LLMExplainer()
+    for finding in findings:
+        explanation = explainer.explain(finding)
+        if explanation and Guardrails.validate_explanation(explanation):
+            finding.explanation = explanation
+            logger.info(f"LLM explanation added to {finding.rule_name}")
+
     # Build report
     report = AnalysisReport(
         pcap_filename=safe_name,
@@ -113,6 +122,13 @@ def run_analysis(pcap_path: str) -> None:
             print(f"      Source   : {finding.src_ip}")
             print(f"      Target   : {finding.dst_ip}")
             print(f"      Time     : {finding.timestamp}")
+            
+            if hasattr(finding, 'explanation') and finding.explanation:
+                print()
+                print(f"      PLAIN ENGLISH EXPLANATION:")
+                for line in finding.explanation.split("\n"):
+                    if line.strip():
+                        print(f"      {line}")
             print()
             print(f"      DESCRIPTION:")
             print(f"      {finding.description}")

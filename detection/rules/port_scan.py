@@ -112,9 +112,9 @@ class PortScanRule(BaseRule):
                     f"with automated network reconnaissance activity."
                 ),
                 evidence={
-                    "scanned_ports": sorted(list(data["ports"])),
+                    "ports_scanned": sorted(list(data["ports"])),
                     "port_count": port_count,
-                    "duration_seconds": duration,
+                    "duration": round(duration, 1),
                     "flow_count": len(data["flows"]),
                 },
                 src_ip=src_ip,

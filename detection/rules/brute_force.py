@@ -108,12 +108,10 @@ class BruteForceRule(BaseRule):
                     f"password guessing attack."
                 ),
                 evidence={
-                    "source_ip": src_ip,
-                    "destination_ip": dst_ip,
-                    "target_port": dst_port,
                     "service": service_name,
+                    "port": dst_port,
                     "attempt_count": len(flows_list),
-                    "duration_seconds": duration,
+                    "duration": round(duration, 1),
                     "attempts_per_second": round(len(flows_list) / duration, 2) if duration > 0 else 0,
                 },
                 src_ip=src_ip,

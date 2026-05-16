@@ -13,7 +13,6 @@
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-import struct
 
 import scapy.all as scapy
 from scapy.layers.inet import IP, TCP, UDP, ICMP
@@ -254,7 +253,7 @@ class PcapParser:
 
             # Process each packet
             for i, packet in enumerate(packets):
-                if i > config.MAX_PACKETS:
+                if i >= config.MAX_PACKETS:
                     logger.warning(
                         f"PCAP exceeded MAX_PACKETS ({config.MAX_PACKETS}). "
                         f"Stopping analysis."

@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from pathlib import Path
 
 from core.models import IOC, IOCType, Finding, Severity, RuleCategory
@@ -103,11 +104,11 @@ class TestEnricher:
             evidence={"test": "data"},
             src_ip="192.168.1.1",
             dst_ip="8.8.8.8",
-            timestamp=None,
+            timestamp=datetime.now(),
             mitre_technique="T1046",
             mitre_tactic="Discovery",
         )
-        
+
         finding.iocs.append(IOC(value="192.168.1.1", ioc_type=IOCType.IP))
         
         enricher.enrich_finding(finding)
