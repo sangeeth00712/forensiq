@@ -10,6 +10,7 @@ from core.models import AnalysisReport
 from detection.engine import DetectionEngine
 from enrichment.enricher import Enricher
 from ai.explainer import LLMExplainer, Guardrails
+from output.report import generate_pdf
 
 logger = get_logger(__name__)
 
@@ -145,8 +146,13 @@ def run_analysis(pcap_path: str) -> None:
     with open(output_file, "w") as f:
         f.write(report.to_json())
 
+    # Save PDF report
+    pdf_file = Path(f"outputs/{pcap_file.stem}_report.pdf")
+    generate_pdf(report, pdf_file)
+
     print()
-    print(f"  Report saved: {output_file}")
+    print(f"  JSON report : {output_file}")
+    print(f"  PDF report  : {pdf_file}")
     print("=" * 60)
     print()
 
