@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ForensiQ — Network Threat Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* ── Backgrounds ── */
+      --bg:       #0C0F1D;
+      --bg2:      #131729;
+      --bg3:      #1A1F38;
+      --bg4:      #212648;
+
+      /* ── Borders ── */
+      --br:       #252B47;
+      --br2:      #343D6A;
+      --br3:      #4A5480;
+
+      /* ── Text ── */
+      --tx:       #D8E0EF;
+      --tx2:      #8A94B0;
+      --tx3:      #5A6480;
+
+      /* ── Accent (steel blue) ── */
+      --ac:       #4B7BFF;
+      --ac2:      #3561E0;
+      --ac-dim:   rgba(75,123,255,0.12);
+
+      /* ── Severity ── */
+      --crit:     #F87171;
+      --crit-bg:  rgba(248,113,113,0.1);
+      --crit-br:  rgba(248,113,113,0.25);
+
+      --high:     #FB923C;
+      --high-bg:  rgba(251,146,60,0.1);
+      --high-br:  rgba(251,146,60,0.25);
+
+      --med:      #FBBF24;
+      --med-bg:   rgba(251,191,36,0.1);
+      --med-br:   rgba(251,191,36,0.25);
+
+      --low:      #34D399;
+      --low-bg:   rgba(52,211,153,0.1);
+      --low-br:   rgba(52,211,153,0.25);
+
+      /* ── Semantic ── */
+      --green:    #34D399;
+      --amber:    #FBBF24;
+
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', sans-serif;
+
+      --r:  8px;
+      --r2: 12px;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--tx);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--br2); border-radius: 3px; }
+
+    /* ═══════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════ */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 40px;
+      height: 56px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--br);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--ac);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--tx);
+    }
+
+    .logo-text em {
+      font-style: normal;
+      font-weight: 300;
+      color: var(--tx2);
+    }
+
+    .header-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--br);
+      margin: 0 20px;
+    }
+
+    .header-meta {
+      font-size: 0.75rem;
+      color: var(--tx3);
+      letter-spacing: 0.02em;
+    }
+
+    .header-nav {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .header-nav a {
+      font-size: 0.75rem;
+      color: var(--tx3);
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      letter-spacing: 0.02em;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .header-nav a:hover {
+      color: var(--tx);
+      background: var(--bg3);
+    }
+
+    .header-nav-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--br);
+      margin: 0 6px;
+    }
+
+    .header-status {
+      margin-left: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--tx3);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    /* ═══════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════ */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ═══════════════════════════════════════════
+       UPLOAD VIEW
+    ═══════════════════════════════════════════ */
+    #upload-view {}
+
+    .page-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--tx3);
+      margin-bottom: 14px;
+    }
+    .page-eyebrow::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--br2);
+    }
+
+    .page-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: var(--tx);
+      margin-bottom: 10px;
+    }
+
+    .page-sub {
+      font-size: 0.9rem;
+      color: var(--tx2);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    /* Upload box */
+    .upload-box {
+      border: 1px solid var(--br);
+      border-radius: var(--r2);
+      padding: 52px 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+      background: var(--bg2);
+      position: relative;
+    }
+    .upload-box:hover {
+      border-color: var(--ac);
+      background: var(--bg3);
+    }
+    .upload-box.drag-over {
+      border-color: var(--ac);
+      background: var(--ac-dim);
+    }
+    .upload-box input[type=file] { display: none; }
+
+    .upload-glyph {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 18px;
+      border-radius: 12px;
+      background: var(--bg3);
+      border: 1px solid var(--br2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .upload-glyph svg { color: var(--tx2); }
+
+    .upload-box h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--tx);
+      margin-bottom: 6px;
+    }
+    .upload-box p {
+      font-size: 0.82rem;
+      color: var(--tx3);
+      margin-bottom: 22px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: var(--r);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      border: none;
+      font-family: var(--sans);
+    }
+    .btn-primary {
+      background: var(--ac);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--ac2); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--tx2);
+      border: 1px solid var(--br2);
+    }
+    .btn-ghost:hover { color: var(--tx); border-color: var(--br3); background: var(--bg3); }
+
+    .btn-danger {
+      background: var(--crit-bg);
+      color: var(--crit);
+      border: 1px solid var(--crit-br);
+    }
+    .btn-danger:hover { background: rgba(248,113,113,0.18); }
+
+    .upload-tags {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .upload-tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--tx3);
+      background: var(--bg3);
+      border: 1px solid var(--br);
+      border-radius: 4px;
+      padding: 3px 10px;
+    }
+
+    /* capability strip */
+    .cap-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1px;
+      background: var(--br);
+      border: 1px solid var(--br);
+      border-radius: var(--r2);
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    .cap-item {
+      background: var(--bg2);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cap-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+    .cap-label { font-size: 0.76rem; color: var(--tx2); font-weight: 500; }
+
+    /* error banner */
+    .error-banner {
+      background: var(--crit-bg);
+      border: 1px solid var(--crit-br);
+      border-radius: var(--r);
+      padding: 12px 16px;
+      color: var(--crit);
+      font-size: 0.84rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* ═══════════════════════════════════════════
+       PROGRESS VIEW
+    ═══════════════════════════════════════════ */
+    #progress-view { display: none; }
+
+    .job-header {
+      background: var(--bg2);
+      border: 1px solid var(--br);
+      border-radius: var(--r2);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .job-file-icon {
+      width: 36px; height: 36px;
+      background: var(--ac-dim);
+      border: 1px solid rgba(75,123,255,0.2);
+      border-radius: var(--r);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .job-filename { font-weight: 600; font-size: 0.9rem; }
+    .job-status   { font-size: 0.76rem; color: var(--tx3); margin-top: 3px; }
+    .job-pct      { margin-left: auto; font-family: var(--mono); font-size: 0.8rem; color: var(--tx3); }
+
+    .prog-track {
+      height: 2px;
+      background: var(--br);
+      border-radius: 2px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      background: var(--ac);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .steps { display: flex; flex-direction: column; gap: 6px; }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg2);
+      border: 1px solid var(--br);
+      border-radius: var(--r);
+      padding: 12px 16px;
+      transition: border-color 0.15s;
+    }
+    .step.running { border-color: var(--ac); }
+    .step.done    { border-color: rgba(52,211,153,0.3); }
+    .step.error   { border-color: var(--crit-br); }
+
+    .step-bullet {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; flex-shrink: 0;
+    }
+    .step-bullet.idle    { background: var(--bg3); color: var(--tx3); border: 1px solid var(--br2); }
+    .step-bullet.running { background: var(--ac-dim); color: var(--ac); border: 1px solid rgba(75,123,255,0.3); }
+    .step-bullet.done    { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+    .step-bullet.error   { background: var(--crit-bg); color: var(--crit); border: 1px solid var(--crit-br); }
+
+    .step-content { flex: 1; }
+    .step-label   { font-size: 0.84rem; font-weight: 500; color: var(--tx); }
+    .step-detail  { font-size: 0.72rem; color: var(--tx3); margin-top: 2px; font-family: var(--mono); }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 12px; height: 12px;
+      border: 1.5px solid var(--ac);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESULTS VIEW
+    ═══════════════════════════════════════════ */
+    #results-view { display: none; }
+
+    /* top bar */
+    .res-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--br);
+      margin-bottom: 20px;
+    }
+    .res-file   { font-weight: 600; font-size: 0.95rem; color: var(--tx); }
+    .res-hash   { font-family: var(--mono); font-size: 0.68rem; color: var(--tx3); margin-top: 4px; word-break: break-all; }
+
+    .sev-summary {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .sev-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .sev-chip .n {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    /* metrics row */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1px;
+      background: var(--br);
+      border: 1px solid var(--br);
+      border-radius: var(--r2);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .metric {
+      background: var(--bg2);
+      padding: 16px;
+      text-align: center;
+    }
+    .metric-val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--tx);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .metric-lbl {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--tx3);
+    }
+
+    /* action row */
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    /* section header */
+    .sec-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .sec-head-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--tx3);
+      white-space: nowrap;
+    }
+    .sec-head-line {
+      flex: 1;
+      height: 1px;
+      background: var(--br);
+    }
+    .sec-head-count {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--tx3);
+      background: var(--bg3);
+      border: 1px solid var(--br);
+      border-radius: 4px;
+      padding: 1px 7px;
+    }
+
+    /* Findings */
+    .findings { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+
+    .finding {
+      background: var(--bg2);
+      border: 1px solid var(--br);
+      border-radius: var(--r2);
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .finding:hover { border-color: var(--br2); }
+
+    .finding-head {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .finding-sev-strip {
+      width: 3px;
+      align-self: stretch;
+      flex-shrink: 0;
+      border-radius: 0;
+    }
+
+    .finding-head-inner {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+    }
+
+    .finding-title-block { flex: 1; }
+    .finding-title { font-size: 0.88rem; font-weight: 600; color: var(--tx); }
+    .finding-subtitle {
+      font-size: 0.72rem;
+      color: var(--tx3);
+      margin-top: 3px;
+      font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .finding-subtitle .sep { color: var(--br2); }
+
+    .finding-sev-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 9px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .finding-toggle {
+      padding: 14px 14px 14px 0;
+      color: var(--tx3);
+      font-size: 0.75rem;
+      transition: transform 0.2s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .finding-toggle.open { transform: rotate(90deg); color: var(--tx2); }
+
+    /* Finding body */
+    .finding-body {
+      display: none;
+      padding: 0 16px 18px 19px;
+      border-top: 1px solid var(--br);
+    }
+    .finding-body.open { display: block; }
+
+    /* flow diagram */
+    .flow-viz {
+      background: var(--bg);
+      border: 1px solid var(--br);
+      border-radius: var(--r);
+      padding: 14px 20px;
+      margin: 14px 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+    }
+    .flow-node {
+      border-radius: 6px;
+      padding: 5px 14px;
+      border: 1px solid;
+    }
+    .flow-node-src {
+      background: var(--bg3);
+      border-color: var(--br2);
+      color: var(--tx2);
+    }
+    .flow-arrow-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .flow-arrow-line {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--tx3);
+      font-size: 0.7rem;
+    }
+    .flow-arrow-note {
+      font-size: 0.62rem;
+      color: var(--tx3);
+      letter-spacing: 0.04em;
+    }
+
+    /* data tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-bottom: 14px;
+    }
+    .data-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--br);
+      vertical-align: top;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table .dk { color: var(--tx3); width: 36%; white-space: nowrap; font-size: 0.75rem; }
+    .data-table .dv { color: var(--tx); font-family: var(--mono); font-size: 0.76rem; }
+    .data-table.striped tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+
+    /* port heatmap */
+    .port-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+    .port-chip {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 3px;
+      border: 1px solid;
+    }
+    .port-legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.68rem;
+      color: var(--tx3);
+      margin-bottom: 14px;
+    }
+
+    /* AI explanation */
+    .ai-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .ai-block {
+      background: var(--bg);
+      border: 1px solid var(--br);
+      border-radius: var(--r);
+      padding: 12px 14px;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      color: var(--tx2);
+    }
+    .ai-block-head {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .ai-block.ai-what .ai-block-head { color: var(--ac); }
+    .ai-block.ai-why  .ai-block-head { color: var(--amber); }
+    .ai-block.ai-todo .ai-block-head { color: var(--green); }
+    .ai-block.ai-todo { border-color: rgba(52,211,153,0.2); }
+
+    /* IOC table */
+    .ioc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      margin-bottom: 24px;
+    }
+    .ioc-table th {
+      background: var(--bg3);
+      color: var(--tx3);
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      padding: 9px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--br);
+    }
+    .ioc-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--br);
+      vertical-align: middle;
+    }
+    .ioc-table tr:last-child td { border-bottom: none; }
+    .ioc-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* vt badge */
+    .vt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* clean result */
+    .clean-panel {
+      background: var(--bg2);
+      border: 1px solid rgba(52,211,153,0.2);
+      border-radius: var(--r2);
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .clean-panel .icon { font-size: 2rem; margin-bottom: 12px; }
+    .clean-panel h3 { color: var(--green); font-size: 1rem; margin-bottom: 6px; }
+    .clean-panel p  { color: var(--tx3); font-size: 0.82rem; }
+
+    /* inlined section title */
+    .sub-sec {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--tx3);
+      margin: 16px 0 8px;
+    }
+
+    /* mitre badge */
+    .mitre-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg3);
+      border: 1px solid var(--br2);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--tx2);
+    }
+    .mitre-badge .mid { color: var(--ac); font-weight: 500; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════════════════ -->
+<header>
+  <a href="/" class="logo-mark">
+    <div class="logo-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+    <span class="logo-text">Forensi<em>Q</em></span>
+  </a>
+  <div class="header-divider"></div>
+  <span class="header-meta">Network Threat Analysis</span>
+  <div class="header-nav">
+    <a href="/docs" target="_blank">Docs</a>
+    <div class="header-nav-sep"></div>
+    <div class="header-status" style="margin-left:0">
+      <div class="status-dot"></div>
+      System ready
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ═══ UPLOAD ════════════════════════════════════════════════════════════ -->
+  <div id="upload-view">
+    <div class="page-eyebrow">PCAP Analysis Platform</div>
+    <h1 class="page-title">Upload a capture file.<br>Get a full threat report.</h1>
+    <p class="page-sub">ForensiQ parses network capture files, runs structured detection rules, queries threat intelligence, and produces a court-ready PDF report.</p>
+
+    <div class="error-banner" id="err-banner"></div>
+
+    <div class="upload-box" id="upload-box" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept=".pcap,.pcapng"/>
+
+      <div class="upload-glyph">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+
+      <h2>Drop your capture file here</h2>
+      <p>or click to browse from your computer</p>
+
+      <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Choose File
+      </button>
+
+      <div class="upload-tags">
+        <span class="upload-tag">.pcap</span>
+        <span class="upload-tag">.pcapng</span>
+        <span class="upload-tag">Max 100 MB</span>
+      </div>
+    </div>
+
+    <div class="cap-strip">
+      <div class="cap-item"><span class="cap-icon">🛡️</span><span class="cap-label">File Validation</span></div>
+      <div class="cap-item"><span class="cap-icon">🔍</span><span class="cap-label">5 Detection Rules</span></div>
+      <div class="cap-item"><span class="cap-icon">🌐</span><span class="cap-label">Threat Intel</span></div>
+      <div class="cap-item"><span class="cap-icon">🤖</span><span class="cap-label">AI Explanations</span></div>
+      <div class="cap-item"><span class="cap-icon">📄</span><span class="cap-label">PDF Report</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ PROGRESS ══════════════════════════════════════════════════════════ -->
+  <div id="progress-view">
+    <div class="job-header">
+      <div class="job-file-icon">📄</div>
+      <div>
+        <div class="job-filename" id="prog-filename">—</div>
+        <div class="job-status"  id="prog-status">Initializing…</div>
+      </div>
+      <div class="job-pct" id="prog-pct">0%</div>
+    </div>
+    <div class="prog-track">
+      <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+    <div class="steps" id="steps-container"></div>
+  </div>
+
+  <!-- ═══ RESULTS ═══════════════════════════════════════════════════════════ -->
+  <div id="results-view">
+    <!-- injected by JS -->
+  </div>
+
+</main>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const STEP_DEFS = [
+  "Validating file",
+  "Parsing PCAP",
+  "Running detection rules",
+  "Enriching IOCs",
+  "Generating AI explanations",
+  "Building PDF report",
+];
+
+const SEV = {
+  CRITICAL: { fg:"#F87171", bg:"rgba(248,113,113,0.1)", br:"rgba(248,113,113,0.25)" },
+  HIGH:     { fg:"#FB923C", bg:"rgba(251,146,60,0.1)",  br:"rgba(251,146,60,0.25)"  },
+  MEDIUM:   { fg:"#FBBF24", bg:"rgba(251,191,36,0.1)",  br:"rgba(251,191,36,0.25)"  },
+  LOW:      { fg:"#34D399", bg:"rgba(52,211,153,0.1)",  br:"rgba(52,211,153,0.25)"  },
+};
+
+const PORT_CRIT = new Set([21,22,23,25,53,135,139,445,3389]);
+const PORT_DB   = new Set([1433,1521,3306,5432,6379,27017]);
+const PORT_MAL  = new Set([1337,4444,8080,8888,31337]);
+
+const $ = id => document.getElementById(id);
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function humanBytes(n) {
+  const u = ["B","KB","MB","GB"];
+  for (let i = 0; i < u.length - 1; i++) { if (n < 1024) return n.toFixed(1) + " " + u[i]; n /= 1024; }
+  return n.toFixed(1) + " GB";
+}
+
+function vtBadge(s) {
+  if (!s || s === "—") return `<span style="color:var(--tx3);font-family:var(--mono);font-size:0.72rem;">—</span>`;
+  const [d, t] = s.split("/").map(Number);
+  const r = t ? d / t : 0;
+  const [fg, bg, br] = r > 0.3
+    ? ["#F87171","rgba(248,113,113,0.1)","rgba(248,113,113,0.25)"]
+    : r > 0
+    ? ["#FBBF24","rgba(251,191,36,0.1)",  "rgba(251,191,36,0.25)"]
+    : ["#34D399","rgba(52,211,153,0.1)",  "rgba(52,211,153,0.25)"];
+  return `<span class="vt-badge" style="color:${fg};background:${bg};border:1px solid ${br};">${s}</span>`;
+}
+
+function portChips(raw) {
+  const ports = String(raw).split(",").map(p => parseInt(p.trim())).filter(n => !isNaN(n));
+  const chips = ports.slice(0, 48).map(p => {
+    let fg, bg, br;
+    if      (PORT_CRIT.has(p)) { fg="#F87171"; bg="rgba(248,113,113,0.1)"; br="rgba(248,113,113,0.3)"; }
+    else if (PORT_DB.has(p))   { fg="#60A5FA"; bg="rgba(96,165,250,0.1)";  br="rgba(96,165,250,0.25)"; }
+    else if (PORT_MAL.has(p))  { fg="#C084FC"; bg="rgba(192,132,252,0.1)"; br="rgba(192,132,252,0.25)"; }
+    else                       { fg="#6B7A99"; bg="rgba(107,122,153,0.08)";br="rgba(107,122,153,0.2)"; }
+    return `<span class="port-chip" style="color:${fg};background:${bg};border-color:${br};">${p}</span>`;
+  });
+  const more = ports.length > 48
+    ? `<span style="font-size:0.7rem;color:var(--tx3);align-self:center;">+${ports.length - 48} more</span>`
+    : "";
+  return `
+    <div class="port-grid">${chips.join("")}${more}</div>
+    <div class="port-legend">
+      <span style="color:#F87171;">■ Critical service</span>
+      <span style="color:#60A5FA;">■ Database</span>
+      <span style="color:#C084FC;">■ Known malware</span>
+      <span style="color:#6B7A99;">■ Other</span>
+    </div>`;
+}
+
+function parseExpl(text) {
+  if (!text) return null;
+  const r = { what: "", why: "", todo: "" };
+  let cur = null, buf = [];
+  for (const line of text.split("\n")) {
+    const l = line.toLowerCase();
+    if      (l.includes("what happened"))  { if (cur) r[cur] = buf.join("\n"); cur = "what"; buf = []; }
+    else if (l.includes("why it matters")) { if (cur) r[cur] = buf.join("\n"); cur = "why";  buf = []; }
+    else if (l.includes("what to do") || l.includes("actions")) {
+      if (cur) r[cur] = buf.join("\n"); cur = "todo"; buf = [];
+    } else if (cur !== null) buf.push(line);
+  }
+  if (cur) r[cur] = buf.join("\n");
+  return (r.what || r.why || r.todo) ? r : null;
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────────
+function initSteps() {
+  $("steps-container").innerHTML = STEP_DEFS.map((lbl, i) => `
+    <div class="step" id="s${i+1}">
+      <div class="step-bullet idle" id="sb${i+1}">${i + 1}</div>
+      <div class="step-content">
+        <div class="step-label"  id="sl${i+1}">${lbl}</div>
+        <div class="step-detail" id="sd${i+1}"></div>
+      </div>
+    </div>`).join("");
+}
+
+function setStep(n, state, label, detail) {
+  const row = $(`s${n}`), bul = $(`sb${n}`);
+  if (!row) return;
+  row.className = `step ${state}`;
+  bul.className = `step-bullet ${state}`;
+  bul.innerHTML = state === "running" ? '<div class="spinner"></div>' : state === "done" ? "✓" : state === "error" ? "✕" : String(n);
+  if (label) $(`sl${n}`).textContent = label;
+  $(`sd${n}`).textContent = detail || "";
+  const pct = Math.round(((state === "done" ? n : n - 0.5) / 6) * 100);
+  $("prog-fill").style.width = pct + "%";
+  $("prog-pct").textContent  = pct + "%";
+  $("prog-status").textContent = label || STEP_DEFS[n - 1];
+}
+
+// ── Upload ────────────────────────────────────────────────────────────────────
+function startUpload(file) {
+  if (!file) return;
+  const ext = file.name.split(".").pop().toLowerCase();
+  if (!["pcap", "pcapng"].includes(ext)) { showErr("Only .pcap and .pcapng files are supported."); return; }
+  if (file.size > 100 * 1024 * 1024)    { showErr("File size exceeds 100 MB limit."); return; }
+
+  hideErr();
+  $("upload-view").style.display   = "none";
+  $("progress-view").style.display = "block";
+  $("results-view").style.display  = "none";
+  $("prog-filename").textContent   = file.name;
+  $("prog-fill").style.width       = "0%";
+  $("prog-pct").textContent        = "0%";
+  initSteps();
+
+  const fd = new FormData();
+  fd.append("file", file);
+
+  fetch("/analyze", { method: "POST", body: fd })
+    .then(r => r.json())
+    .then(({ job_id, error }) => {
+      if (error) { errBack(error); return; }
+      const es = new EventSource(`/stream/${job_id}`);
+      es.onmessage = e => {
+        const msg = JSON.parse(e.data);
+        if (msg.event === "step") {
+          setStep(msg.data.step, msg.data.status, msg.data.label, msg.data.detail);
+        } else if (msg.event === "complete") {
+          es.close();
+          $("progress-view").style.display = "none";
+          $("results-view").style.display  = "block";
+          renderResults(msg.data);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else if (msg.event === "error") {
+          es.close(); errBack(msg.data.message);
+        }
+      };
+      es.onerror = () => { es.close(); errBack("Connection lost. Please try again."); };
+    })
+    .catch(err => errBack("Upload failed: " + err.message));
+}
+
+function showErr(m) { const b = $("err-banner"); b.textContent = m; b.style.display = "block"; }
+function hideErr()  { $("err-banner").style.display = "none"; }
+
+function errBack(m) {
+  $("progress-view").style.display = "none";
+  $("upload-view").style.display   = "block";
+  showErr(m);
+}
+
+function reset() {
+  $("file-input").value            = "";
+  $("results-view").innerHTML      = "";
+  $("results-view").style.display  = "none";
+  $("progress-view").style.display = "none";
+  $("upload-view").style.display   = "block";
+  hideErr();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ── Render Results ────────────────────────────────────────────────────────────
+function renderResults(data) {
+  const rv = $("results-view");
+
+  // severity chips
+  const chips = ["CRITICAL","HIGH","MEDIUM","LOW"].map(s => {
+    const c = SEV[s];
+    return `<div class="sev-chip" style="background:${c.bg};border:1px solid ${c.br};color:${c.fg};">
+      <span class="n">${data.severity[s]}</span> ${s}
+    </div>`;
+  }).join("");
+
+  // metrics
+  const metrics = ["flows","packets","bytes","findings_count","duration"].map((k, i) => {
+    const labels = ["Flows","Packets","Data","Findings","Duration"];
+    const vals   = [
+      data.flows.toLocaleString(),
+      data.packets.toLocaleString(),
+      humanBytes(data.bytes),
+      data.findings_count,
+      data.duration + "s",
+    ];
+    return `<div class="metric"><div class="metric-val">${vals[i]}</div><div class="metric-lbl">${labels[i]}</div></div>`;
+  }).join("");
+
+  // findings
+  let findingsHtml = "";
+  if (!data.findings.length) {
+    findingsHtml = `<div class="clean-panel">
+      <div class="icon">✅</div>
+      <h3>No threats detected</h3>
+      <p>All 5 detection rules ran across ${data.flows.toLocaleString()} flows — nothing suspicious found.</p>
+    </div>`;
+  } else {
+    findingsHtml = data.findings.map((f, i) => {
+      const c  = SEV[f.severity] || SEV.LOW;
+
+      // evidence rows
+      const evRows = Object.entries(f.evidence).map(([k, v]) =>
+        `<tr><td class="dk">${k}</td><td class="dv">${v}</td></tr>`
+      ).join("");
+
+      // ports
+      const portsRaw = f.evidence.ports_scanned;
+      const portsBlock = portsRaw
+        ? `<div class="sub-sec">Port Heatmap</div>${portChips(portsRaw)}`
+        : "";
+
+      // AI
+      const expl = parseExpl(f.explanation);
+      let aiBlock = "";
+      if (expl) {
+        aiBlock = `<div class="sub-sec">AI Explanation</div><div class="ai-panel">`;
+        if (expl.what) aiBlock += `<div class="ai-block ai-what"><div class="ai-block-head">What happened</div>${expl.what.replace(/\n/g,"<br>")}</div>`;
+        if (expl.why)  aiBlock += `<div class="ai-block ai-why"><div class="ai-block-head">Why it matters</div>${expl.why.replace(/\n/g,"<br>")}</div>`;
+        if (expl.todo) aiBlock += `<div class="ai-block ai-todo"><div class="ai-block-head">Recommended actions</div>${expl.todo.replace(/\n/g,"<br>")}</div>`;
+        aiBlock += `</div>`;
+      }
+
+      // IOCs
+      const iocRows = f.iocs.map(ioc => {
+        const sc = ioc.malicious
+          ? `<span style="color:#F87171;font-weight:600;font-size:0.72rem;">MALICIOUS</span>`
+          : `<span style="color:#34D399;font-size:0.72rem;">Clean</span>`;
+        return `<tr>
+          <td><span style="font-family:var(--mono);font-size:0.75rem;color:var(--ac);">${ioc.value}</span></td>
+          <td style="color:var(--tx3);font-size:0.72rem;">${ioc.type}</td>
+          <td>${vtBadge(ioc.vt_score)}</td>
+          <td>${sc}</td>
+        </tr>`;
+      }).join("");
+
+      const iocBlock = iocRows ? `
+        <div class="sub-sec">Indicators of Compromise</div>
+        <table class="ioc-table">
+          <thead><tr><th>Value</th><th>Type</th><th>VT Score</th><th>Status</th></tr></thead>
+          <tbody>${iocRows}</tbody>
+        </table>` : "";
+
+      const mitreLabel = `<span class="mitre-badge"><span class="mid">${f.mitre_technique}</span>${f.mitre_tactic}</span>`;
+
+      return `
+        <div class="finding" id="fd${i}">
+          <div class="finding-head" onclick="toggleF(${i})">
+            <div class="finding-sev-strip" style="background:${c.fg};"></div>
+            <div class="finding-head-inner">
+              <div class="finding-title-block">
+                <div class="finding-title">${f.title}</div>
+                <div class="finding-subtitle">
+                  <span>${f.src_ip}</span>
+                  <span class="sep">→</span>
+                  <span>${f.dst_ip}</span>
+                  <span class="sep">·</span>
+                  <span>${f.timestamp}</span>
+                </div>
+              </div>
+              ${mitreLabel}
+              <div class="finding-sev-label" style="background:${c.bg};color:${c.fg};border:1px solid ${c.br};">${f.severity}</div>
+            </div>
+            <div class="finding-toggle" id="ft${i}">›</div>
+          </div>
+          <div class="finding-body" id="fb${i}">
+            <div class="flow-viz">
+              <div class="flow-node flow-node-src">${f.src_ip}</div>
+              <div class="flow-arrow-label">
+                <div class="flow-arrow-line">
+                  <span>—</span><span>—</span><span>—</span>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <div class="flow-arrow-note">ATTACKER → TARGET</div>
+              </div>
+              <div class="flow-node" style="background:${c.bg};border-color:${c.br};color:${c.fg};">${f.dst_ip}</div>
+            </div>
+            <div class="sub-sec">Evidence</div>
+            <table class="data-table striped"><tbody>${evRows}</tbody></table>
+            ${portsBlock}
+            ${aiBlock}
+            ${iocBlock}
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  // all IOC summary table
+  const allIocs = [...new Map(
+    data.findings.flatMap(f => f.iocs).map(i => [i.value, i])
+  ).values()];
+
+  const allIocBlock = allIocs.length ? `
+    <div class="sec-head" style="margin-top:8px;">
+      <div class="sec-head-label">All IOCs</div>
+      <div class="sec-head-line"></div>
+      <div class="sec-head-count">${allIocs.length}</div>
+    </div>
+    <table class="ioc-table">
+      <thead><tr><th>Value</th><th>Type</th><th>Source Rule</th><th>VT Score</th><th>Status</th></tr></thead>
+      <tbody>${allIocs.map(ioc => {
+        const src = data.findings.find(f => f.iocs.some(i => i.value === ioc.value))?.rule_name || "—";
+        const sc  = ioc.malicious
+          ? `<span style="color:#F87171;font-weight:600;font-size:0.72rem;">MALICIOUS</span>`
+          : `<span style="color:#34D399;font-size:0.72rem;">Clean</span>`;
+        return `<tr>
+          <td><span style="font-family:var(--mono);font-size:0.75rem;color:var(--ac);">${ioc.value}</span></td>
+          <td style="color:var(--tx3);font-size:0.72rem;">${ioc.type}</td>
+          <td style="font-family:var(--mono);font-size:0.7rem;color:var(--tx3);">${src}</td>
+          <td>${vtBadge(ioc.vt_score)}</td>
+          <td>${sc}</td>
+        </tr>`;
+      }).join("")}</tbody>
+    </table>` : "";
+
+  rv.innerHTML = `
+    <div class="res-header">
+      <div>
+        <div class="res-file">${data.filename}</div>
+        <div class="res-hash">SHA-256 &nbsp;${data.hash}</div>
+      </div>
+      <div class="sev-summary">${chips}</div>
+    </div>
+
+    <div class="metrics">${metrics}</div>
+
+    <div class="action-row">
+      <a class="btn btn-primary" href="/download/${data.job_id}/pdf" download>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PDF Report
+      </a>
+      <a class="btn btn-ghost" href="/download/${data.job_id}/json" download>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Export JSON
+      </a>
+      <button class="btn btn-ghost" onclick="reset()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.89"/></svg>
+        New Analysis
+      </button>
+    </div>
+
+    <div class="sec-head">
+      <div class="sec-head-label">Findings</div>
+      <div class="sec-head-line"></div>
+      <div class="sec-head-count">${data.findings_count}</div>
+    </div>
+    <div class="findings">${findingsHtml}</div>
+    ${allIocBlock}
+  `;
+
+  if (data.findings.length && ["CRITICAL","HIGH"].includes(data.findings[0].severity)) {
+    toggleF(0);
+  }
+}
+
+function toggleF(i) {
+  const b = $(`fb${i}`), t = $(`ft${i}`);
+  const o = b.classList.contains("open");
+  b.classList.toggle("open", !o);
+  t.classList.toggle("open", !o);
+}
+
+// ── Wire events ───────────────────────────────────────────────────────────────
+$("file-input").addEventListener("change", e => {
+  if (e.target.files[0]) startUpload(e.target.files[0]);
+});
+
+const box = $("upload-box");
+box.addEventListener("dragover",  e => { e.preventDefault(); box.classList.add("drag-over"); });
+box.addEventListener("dragleave", ()  => box.classList.remove("drag-over"));
+box.addEventListener("drop",      e  => {
+  e.preventDefault();
+  box.classList.remove("drag-over");
+  if (e.dataTransfer.files[0]) startUpload(e.dataTransfer.files[0]);
+});
+</script>
+</body>
+</html>

@@ -4,6 +4,9 @@ venv/
 # Environment variables — API keys live here, NEVER commit
 .env
 
+# Streamlit secrets — API keys for local dev, NEVER commit
+.streamlit/secrets.toml
+
 # Uploaded files — may contain sensitive forensic data
 uploads/
 outputs/

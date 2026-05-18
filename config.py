@@ -11,6 +11,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+def _secret(key: str, default: str = "") -> str:
+    """Read from st.secrets (Streamlit Cloud) or fall back to env var."""
+    try:
+        import streamlit as st
+        return st.secrets.get(key, os.getenv(key, default))
+    except Exception:
+        return os.getenv(key, default)
+
 BASE_DIR   = Path(__file__).resolve().parent
 UPLOAD_DIR = BASE_DIR / "uploads"
 OUTPUT_DIR = BASE_DIR / "outputs"
@@ -32,23 +41,23 @@ PORT_SCAN_THRESHOLD        = 15
 PORT_SCAN_WINDOW_SECONDS   = 60
 
 BEACON_MIN_CONNECTIONS     = 5
-BEACON_INTERVAL_TOLERANCE  = 0.10
-BEACON_MIN_INTERVAL_SEC    = 10
+BEACON_INTERVAL_TOLERANCE  = 0.50
+BEACON_MIN_INTERVAL_SEC    = 5
 BEACON_MAX_INTERVAL_SEC    = 3600
 
 DNS_TUNNEL_QUERY_THRESHOLD = 100
 DNS_TUNNEL_MIN_ENTROPY     = 3.5
 DNS_TUNNEL_LABEL_LENGTH    = 52
 
-EXFIL_BYTES_THRESHOLD      = 50 * 1024 * 1024
+EXFIL_BYTES_THRESHOLD      = 10 * 1024
 EXFIL_WINDOW_SECONDS       = 300
 
 BRUTE_FORCE_THRESHOLD      = 20
 BRUTE_FORCE_WINDOW_SECONDS = 60
 
-VIRUSTOTAL_API_KEY     = os.getenv("VIRUSTOTAL_API_KEY", "")
-OTX_API_KEY            = os.getenv("OTX_API_KEY", "")
-GROQ_API_KEY           = os.getenv("GROQ_API_KEY", "")
+VIRUSTOTAL_API_KEY     = _secret("VIRUSTOTAL_API_KEY")
+OTX_API_KEY            = _secret("OTX_API_KEY")
+GROQ_API_KEY           = _secret("GROQ_API_KEY")
 CACHE_DB_PATH          = CACHE_DIR / "forensiq_cache.db"
 CACHE_TTL_SECONDS      = 86_400
 VT_REQUESTS_PER_MINUTE = 4

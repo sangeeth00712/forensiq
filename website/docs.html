@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ForensiQ — Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:    #0C0F1D;
+      --bg2:   #131729;
+      --bg3:   #1A1F38;
+      --bg4:   #212648;
+      --br:    #252B47;
+      --br2:   #343D6A;
+      --tx:    #D8E0EF;
+      --tx2:   #8A94B0;
+      --tx3:   #5A6480;
+      --ac:    #4B7BFF;
+      --ac2:   #3561E0;
+      --green: #34D399;
+      --amber: #FBBF24;
+      --red:   #F87171;
+      --purple:#C084FC;
+      --mono:  'JetBrains Mono', monospace;
+      --sans:  'Inter', sans-serif;
+      --sidebar-w: 260px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--tx);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--br2); border-radius: 3px; }
+
+    /* ── Header ── */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 52px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--br);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; font-weight: 700; font-size: 0.95rem;
+      color: var(--tx);
+    }
+    .nav-logo-icon {
+      width: 24px; height: 24px; border-radius: 5px;
+      background: var(--ac);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
+    .nav-logo em { font-style: normal; color: var(--tx2); font-weight: 300; }
+    .nav-divider { width: 1px; height: 16px; background: var(--br); }
+    .nav-label { font-size: 0.75rem; color: var(--tx3); font-weight: 500; letter-spacing: 0.02em; }
+    .nav-back {
+      margin-left: auto; font-size: 0.78rem; color: var(--tx3);
+      text-decoration: none; display: flex; align-items: center; gap: 5px;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--tx); }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      padding-top: 52px;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      position: fixed;
+      top: 52px; bottom: 0; left: 0;
+      overflow-y: auto;
+      background: var(--bg2);
+      border-right: 1px solid var(--br);
+      padding: 24px 0 40px;
+    }
+
+    .sb-section {
+      padding: 0 16px;
+      margin-bottom: 20px;
+    }
+    .sb-section-title {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--tx3);
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+    .sb-link {
+      display: block;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--tx2);
+      text-decoration: none;
+      transition: background 0.12s, color 0.12s;
+      line-height: 1.4;
+    }
+    .sb-link:hover { background: var(--bg3); color: var(--tx); }
+    .sb-link.active { background: rgba(75,123,255,0.12); color: var(--ac); }
+    .sb-link.sub {
+      padding-left: 22px;
+      font-size: 0.76rem;
+      color: var(--tx3);
+    }
+    .sb-link.sub:hover { color: var(--tx2); }
+
+    /* ── Content ── */
+    .content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      max-width: 820px;
+      padding: 52px 60px 120px;
+    }
+
+    /* ── Typography ── */
+    .doc-section { margin-bottom: 72px; scroll-margin-top: 80px; }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--tx);
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    h1 .sub {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--tx2);
+      letter-spacing: 0;
+      margin-top: 8px;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--tx);
+      margin-bottom: 14px;
+      margin-top: 40px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--br);
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--tx);
+      margin: 24px 0 10px;
+    }
+
+    p {
+      color: var(--tx2);
+      margin-bottom: 14px;
+      line-height: 1.75;
+    }
+
+    a { color: var(--ac); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    strong { color: var(--tx); font-weight: 600; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.82em;
+      background: var(--bg3);
+      color: var(--ac);
+      border: 1px solid var(--br);
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: var(--bg2);
+      border: 1px solid var(--br);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--br);
+    }
+    .code-block-lang {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--tx3);
+    }
+    .code-block-title { font-size: 0.72rem; color: var(--tx3); }
+    .code-block pre {
+      padding: 18px 20px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.7;
+      color: var(--tx);
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .code-block .c  { color: var(--tx3); }
+    .code-block .k  { color: var(--purple); }
+    .code-block .s  { color: var(--green); }
+    .code-block .n  { color: var(--ac); }
+    .code-block .v  { color: var(--amber); }
+    .code-block .cm { color: var(--tx3); font-style: italic; }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 18px 0;
+      display: flex;
+      gap: 12px;
+      font-size: 0.86rem;
+      line-height: 1.65;
+    }
+    .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .callout-body { color: var(--tx2); flex: 1; }
+    .callout-body strong { font-weight: 600; display: block; margin-bottom: 3px; }
+    .callout.info    { background: rgba(75,123,255,0.08);  border: 1px solid rgba(75,123,255,0.2);  }
+    .callout.warning { background: rgba(251,191,36,0.08);  border: 1px solid rgba(251,191,36,0.2);  }
+    .callout.tip     { background: rgba(52,211,153,0.08);  border: 1px solid rgba(52,211,153,0.2);  }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); }
+
+    /* ── Steps ── */
+    .steps-list { display: flex; flex-direction: column; gap: 0; margin: 20px 0; }
+    .step-item {
+      display: flex;
+      gap: 16px;
+      padding-bottom: 24px;
+      position: relative;
+    }
+    .step-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px; top: 32px; bottom: 0;
+      width: 1px;
+      background: var(--br);
+    }
+    .step-num {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--ac); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+    }
+    .step-body h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: var(--tx); }
+    .step-body p  { font-size: 0.84rem; color: var(--tx2); margin: 0; }
+
+    /* ── Tables ── */
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 16px 0;
+    }
+    .doc-table th {
+      background: var(--bg3);
+      color: var(--tx3);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--br);
+    }
+    .doc-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--br);
+      color: var(--tx2);
+      vertical-align: top;
+    }
+    .doc-table tr:last-child td { border-bottom: none; }
+    .doc-table tr:hover td { background: rgba(255,255,255,0.015); }
+    .doc-table td:first-child { color: var(--tx); font-family: var(--mono); font-size: 0.78rem; }
+
+    /* ── Pipeline diagram ── */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 24px 0;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .pipe-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .pipe-box {
+      background: var(--bg3);
+      border: 1px solid var(--br2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      text-align: center;
+      min-width: 90px;
+    }
+    .pipe-box-icon { font-size: 1.1rem; margin-bottom: 4px; }
+    .pipe-box-label { font-size: 0.72rem; font-weight: 600; color: var(--tx); }
+    .pipe-box-sub   { font-size: 0.62rem; color: var(--tx3); margin-top: 1px; }
+    .pipe-arrow {
+      color: var(--tx3);
+      font-size: 0.9rem;
+      padding: 0 6px;
+      padding-bottom: 20px;
+    }
+    .pipe-step .pipe-note {
+      font-size: 0.62rem;
+      color: var(--tx3);
+      text-align: center;
+      max-width: 90px;
+    }
+
+    /* ── Rule card ── */
+    .rule-card {
+      background: var(--bg2);
+      border: 1px solid var(--br);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin: 14px 0;
+    }
+    .rule-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .rule-sev {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .rule-name { font-size: 0.9rem; font-weight: 700; color: var(--tx); }
+    .rule-mitre {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ac);
+      background: rgba(75,123,255,0.1);
+      border: 1px solid rgba(75,123,255,0.2);
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+    .rule-desc { font-size: 0.83rem; color: var(--tx2); margin-bottom: 12px; line-height: 1.65; }
+    .rule-signals { display: flex; flex-direction: column; gap: 5px; }
+    .rule-signal {
+      font-size: 0.78rem;
+      color: var(--tx3);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .rule-signal::before {
+      content: '—';
+      color: var(--br2);
+      flex-shrink: 0;
+    }
+
+    /* ── Config table ── */
+    .cfg-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.8rem; margin: 14px 0;
+    }
+    .cfg-table th {
+      background: var(--bg3); color: var(--tx3);
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.09em; padding: 9px 12px; text-align: left;
+      border-bottom: 1px solid var(--br);
+    }
+    .cfg-table td {
+      padding: 9px 12px; border-bottom: 1px solid var(--br);
+      vertical-align: top;
+    }
+    .cfg-table tr:last-child td { border-bottom: none; }
+    .cfg-table .cfg-key { font-family: var(--mono); font-size: 0.76rem; color: var(--ac); }
+    .cfg-table .cfg-val { font-family: var(--mono); font-size: 0.76rem; color: var(--amber); }
+    .cfg-table .cfg-desc { color: var(--tx2); font-size: 0.78rem; }
+
+    /* ── API endpoint ── */
+    .endpoint {
+      background: var(--bg2);
+      border: 1px solid var(--br);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+    .endpoint-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--br);
+      background: var(--bg3);
+    }
+    .method {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 4px;
+    }
+    .method-post { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
+    .method-get  { background: rgba(52,211,153,0.12);  color: var(--green); border: 1px solid rgba(52,211,153,0.22); }
+    .endpoint-path { font-family: var(--mono); font-size: 0.85rem; color: var(--tx); }
+    .endpoint-desc { font-size: 0.78rem; color: var(--tx3); margin-left: auto; }
+    .endpoint-body { padding: 16px 18px; font-size: 0.82rem; color: var(--tx2); }
+
+    /* ── Divider ── */
+    .doc-divider { border: none; border-top: 1px solid var(--br); margin: 48px 0; }
+
+    /* ── Badge inline ── */
+    .badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .badge-opt  { background: rgba(52,211,153,0.1);  color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+    .badge-req  { background: rgba(248,113,113,0.1); color: var(--red);   border: 1px solid rgba(248,113,113,0.25); }
+    .badge-new  { background: rgba(75,123,255,0.12); color: var(--ac);    border: 1px solid rgba(75,123,255,0.25); }
+
+    /* ── Responsive ── */
+    @media (max-width: 780px) {
+      .sidebar { display: none; }
+      .content { margin-left: 0; padding: 32px 20px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top nav -->
+<nav class="top-nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+    Forensi<em>Q</em>
+  </a>
+  <div class="nav-divider"></div>
+  <span class="nav-label">Documentation</span>
+  <a href="/" class="nav-back">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to tool
+  </a>
+</nav>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-section-title">Getting Started</div>
+      <a href="#overview"      class="sb-link">Overview</a>
+      <a href="#quickstart"    class="sb-link">Quick Start</a>
+      <a href="#prerequisites" class="sb-link sub">Prerequisites</a>
+      <a href="#install"       class="sb-link sub">Installation</a>
+      <a href="#firstrun"      class="sb-link sub">Your First Analysis</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">How It Works</div>
+      <a href="#architecture"  class="sb-link">Architecture</a>
+      <a href="#pipeline"      class="sb-link sub">The Pipeline</a>
+      <a href="#models"        class="sb-link sub">Core Data Models</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Detection</div>
+      <a href="#rules"         class="sb-link">Detection Rules</a>
+      <a href="#rule-portscan" class="sb-link sub">Port Scan</a>
+      <a href="#rule-brute"    class="sb-link sub">Brute Force</a>
+      <a href="#rule-c2"       class="sb-link sub">C2 Beaconing</a>
+      <a href="#rule-exfil"    class="sb-link sub">Data Exfiltration</a>
+      <a href="#rule-dns"      class="sb-link sub">DNS Tunneling</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Configuration</div>
+      <a href="#config"        class="sb-link">config.py Reference</a>
+      <a href="#env"           class="sb-link sub">Environment Variables</a>
+      <a href="#thresholds"    class="sb-link sub">Detection Thresholds</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Interfaces</div>
+      <a href="#webui"         class="sb-link">Web Interface</a>
+      <a href="#cli"           class="sb-link">CLI Usage</a>
+      <a href="#api"           class="sb-link">API Reference</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Output</div>
+      <a href="#reports"       class="sb-link">Reports</a>
+      <a href="#pdf"           class="sb-link sub">PDF Structure</a>
+      <a href="#json"          class="sb-link sub">JSON Format</a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-title">Extending</div>
+      <a href="#addrule"       class="sb-link">Adding a Detection Rule</a>
+      <a href="#troubleshoot"  class="sb-link">Troubleshooting</a>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ═══════════ OVERVIEW ═══════════ -->
+    <div class="doc-section" id="overview">
+      <h1>
+        ForensiQ Documentation
+        <span class="sub">Everything you need to install, configure, and extend the tool.</span>
+      </h1>
+
+      <p>ForensiQ is an open-source network forensics tool that turns raw PCAP capture files into structured threat intelligence reports. You give it a network capture, and it gives you back a complete picture of what happened — which hosts were attacked, what techniques were used, and what you should do about it.</p>
+
+      <p>It's built entirely in Python and runs locally. No cloud required, no data leaves your machine.</p>
+
+      <div class="callout info">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">
+          <strong>Who is this for?</strong>
+          ForensiQ is designed for security professionals, students, incident responders, and anyone who needs to make sense of a network capture quickly. You don't need deep packet analysis expertise — the tool explains everything in plain English.
+        </div>
+      </div>
+
+      <h3>What ForensiQ detects</h3>
+      <p>Five threat categories are covered out of the box, all mapped to MITRE ATT&CK:</p>
+
+      <table class="doc-table">
+        <thead><tr><th>Threat</th><th>MITRE</th><th>What it looks like</th></tr></thead>
+        <tbody>
+          <tr><td>Port Scan</td><td>T1046</td><td>One host contacting many ports on another host in a short window</td></tr>
+          <tr><td>Brute Force</td><td>T1110</td><td>Repeated failed authentication attempts to the same service</td></tr>
+          <tr><td>C2 Beaconing</td><td>T1071</td><td>Regular check-in traffic to an external IP at consistent intervals</td></tr>
+          <tr><td>Data Exfiltration</td><td>T1020</td><td>Large outbound data transfers to external destinations</td></tr>
+          <tr><td>DNS Tunneling</td><td>T1071.004</td><td>Unusually long DNS query names hiding data in subdomains</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ QUICK START ═══════════ -->
+    <div class="doc-section" id="quickstart">
+      <h1>Quick Start</h1>
+      <p>Get ForensiQ running and analyzing traffic in under 5 minutes.</p>
+
+      <h2 id="prerequisites">Prerequisites</h2>
+      <p>Before you begin, make sure you have:</p>
+      <table class="doc-table">
+        <thead><tr><th>Requirement</th><th>Version</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Python</td><td>3.10 or higher</td><td>Check with <code>python3 --version</code></td></tr>
+          <tr><td>pip</td><td>Any recent version</td><td>Comes bundled with Python</td></tr>
+          <tr><td>libpcap</td><td>Any</td><td>macOS: built-in. Linux: <code>apt install libpcap-dev</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warning">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body">
+          <strong>macOS note</strong>
+          Port 5000 is reserved by AirPlay Receiver on macOS Monterey and later. ForensiQ's web server runs on port <strong>5001</strong> to avoid this conflict.
+        </div>
+      </div>
+
+      <h2 id="install">Installation</h2>
+      <div class="steps-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Clone the repository</h4>
+            <p>Get the code onto your machine.</p>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+              <pre>git clone &lt;your-repo-url&gt;
+cd forensiq</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Install Python dependencies</h4>
+            <p>All dependencies are pinned in <code>requirements.txt</code>.</p>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+              <pre>pip install -r requirements.txt</pre>
+            </div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Configure API keys</h4>
+            <p>Copy the example env file and fill in your keys. All three are optional — ForensiQ runs without them, just with reduced functionality.</p>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+              <pre>cp .env.example .env</pre>
+            </div>
+            <div class="code-block">
+              <div class="code-block-header"><span class="code-block-lang">.env</span></div>
+              <pre>VIRUSTOTAL_API_KEY=your_key_here   # Free at virustotal.com
+GROQ_API_KEY=your_key_here         # Free at console.groq.com
+OTX_API_KEY=your_key_here          # Free at otx.alienvault.com</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="firstrun">Your First Analysis</h2>
+      <p>There are two ways to run ForensiQ: through the web interface (recommended) or the command line.</p>
+
+      <h3>Web interface</h3>
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+        <pre>python app.py</pre>
+      </div>
+      <p>Then open <a href="http://localhost:5001">http://localhost:5001</a> in your browser. Drag and drop any <code>.pcap</code> or <code>.pcapng</code> file onto the upload zone. The analysis runs live — you'll see each step complete in real time, and results appear directly on the page when it's done.</p>
+
+      <h3>Command line</h3>
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+        <pre>python3 main.py path/to/your/capture.pcap</pre>
+      </div>
+      <p>Results are printed to the terminal. Reports are saved to the <code>outputs/</code> directory as both JSON and PDF.</p>
+
+      <div class="callout tip">
+        <span class="callout-icon">✅</span>
+        <div class="callout-body">
+          <strong>Test with a real threat sample</strong>
+          The repo includes a port scan PCAP at <code>tests/portscan.pcap</code>. There's also a real AgentTesla malware capture at <code>tests/sample_pcaps/agenttesla.pcap</code> for a more complete test.
+        </div>
+      </div>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ ARCHITECTURE ═══════════ -->
+    <div class="doc-section" id="architecture">
+      <h1>Architecture</h1>
+      <p>ForensiQ is a linear pipeline. Every analysis follows the same six steps in the same order. Nothing is skipped, nothing runs in parallel — this makes it completely predictable and easy to debug.</p>
+
+      <h2 id="pipeline">The Pipeline</h2>
+
+      <div class="pipeline">
+        <div class="pipe-step">
+          <div class="pipe-box"><div class="pipe-box-icon">🛡️</div><div class="pipe-box-label">Validate</div><div class="pipe-box-sub">core/validator.py</div></div>
+          <div class="pipe-note">Magic bytes, size, hash</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-box"><div class="pipe-box-icon">📦</div><div class="pipe-box-label">Parse</div><div class="pipe-box-sub">core/parser.py</div></div>
+          <div class="pipe-note">Scapy → Flow objects</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-box"><div class="pipe-box-icon">🔍</div><div class="pipe-box-label">Detect</div><div class="pipe-box-sub">detection/engine.py</div></div>
+          <div class="pipe-note">5 rules → Findings</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-box"><div class="pipe-box-icon">🌐</div><div class="pipe-box-label">Enrich</div><div class="pipe-box-sub">enrichment/</div></div>
+          <div class="pipe-note">VirusTotal, MITRE</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-box"><div class="pipe-box-icon">🤖</div><div class="pipe-box-label">Explain</div><div class="pipe-box-sub">ai/explainer.py</div></div>
+          <div class="pipe-note">Groq LLM + guardrails</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="pipe-box"><div class="pipe-box-icon">📄</div><div class="pipe-box-label">Report</div><div class="pipe-box-sub">output/report.py</div></div>
+          <div class="pipe-note">PDF + JSON</div>
+        </div>
+      </div>
+
+      <p>Each step receives the output of the previous step as its input. If a step fails (say, the PCAP is corrupted), execution stops immediately with a clear error — it never silently continues with bad data.</p>
+
+      <h3>Step 1 — Validate</h3>
+      <p><code>core/validator.py</code> checks three things before a single packet is read: the file extension must be <code>.pcap</code>, <code>.pcapng</code>, or <code>.cap</code>; the first 4 bytes must match the PCAP magic number (<code>0xd4c3b2a1</code> or <code>0xa1b2c3d4</code>); and the file must be under 500 MB. If anything fails, a <code>ValidationError</code> is raised. On success, it returns a sanitised filename and a SHA-256 hash for chain-of-custody tracking.</p>
+
+      <h3>Step 2 — Parse</h3>
+      <p><code>core/parser.py</code> uses Scapy to read the PCAP packet by packet. Each packet is added to a flow dictionary keyed by the 5-tuple <code>src_ip:src_port → dst_ip:dst_port + protocol</code>. This reconstructs bidirectional conversations into <code>Flow</code> objects. DNS queries, HTTP host headers, and TLS SNI values are extracted where present.</p>
+
+      <h3>Step 3 — Detect</h3>
+      <p><code>detection/engine.py</code> runs all registered rules against the flow list. Each rule runs inside a <code>try/except</code> wrapper, so a crash in one rule never prevents the others from running. All findings are collected and returned together.</p>
+
+      <h3>Step 4 — Enrich</h3>
+      <p><code>enrichment/enricher.py</code> extracts IOCs (IP addresses, domains) from each finding and queries VirusTotal for reputation data. Private IP addresses are skipped. Results are cached in SQLite for 24 hours to avoid hitting API rate limits on repeated analyses.</p>
+
+      <h3>Step 5 — Explain</h3>
+      <p><code>ai/explainer.py</code> calls Groq's LLaMA 3.1 model with a structured prompt for each finding. The response is validated by <code>Guardrails</code> before it's attached — if the LLM hedges, hallucinates, or doesn't follow the expected format, the explanation is discarded rather than shown.</p>
+
+      <h3>Step 6 — Report</h3>
+      <p><code>output/report.py</code> assembles a 6-page PDF using ReportLab, and <code>AnalysisReport.to_json()</code> serialises everything to a structured JSON file. Both are saved to the <code>outputs/</code> directory.</p>
+
+      <h2 id="models">Core Data Models</h2>
+      <p>Three dataclasses flow through the entire system, defined in <code>core/models.py</code>.</p>
+
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">python</span><span class="code-block-title">core/models.py — simplified</span></div>
+        <pre><span class="k">@dataclass</span>
+<span class="k">class</span> <span class="n">Flow</span>:
+    src_ip: str           <span class="c"># Source IP address</span>
+    dst_ip: str           <span class="c"># Destination IP address</span>
+    src_port: int
+    dst_port: int
+    protocol: Protocol    <span class="c"># TCP / UDP / ICMP / DNS / HTTP / TLS</span>
+    first_seen: datetime
+    last_seen: datetime
+    packet_count: int
+    bytes_transferred: int
+    dns_query: str        <span class="c"># Set if protocol is DNS</span>
+    http_host: str        <span class="c"># Set if HTTP Host header found</span>
+    tls_sni: str          <span class="c"># Set if TLS SNI found</span>
+
+<span class="k">@dataclass</span>
+<span class="k">class</span> <span class="n">Finding</span>:
+    rule_name: str
+    severity: Severity    <span class="c"># CRITICAL / HIGH / MEDIUM / LOW</span>
+    category: RuleCategory
+    title: str
+    description: str
+    evidence: dict        <span class="c"># Must be non-empty — enforced in __post_init__</span>
+    src_ip: str
+    dst_ip: str
+    timestamp: datetime
+    mitre_technique: str  <span class="c"># e.g. "T1046"</span>
+    mitre_tactic: str     <span class="c"># e.g. "Discovery"</span>
+    iocs: List[IOC]       <span class="c"># Populated by enricher</span>
+    explanation: str      <span class="c"># Populated by AI explainer</span></pre>
+      </div>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ DETECTION RULES ═══════════ -->
+    <div class="doc-section" id="rules">
+      <h1>Detection Rules</h1>
+      <p>Every rule lives in <code>detection/rules/</code> and extends <code>BaseRule</code>. Rules are given the full list of parsed flows and return a list of <code>Finding</code> objects. They never modify flows — they only read.</p>
+
+      <div id="rule-portscan" class="rule-card">
+        <div class="rule-card-header">
+          <div class="rule-sev" style="background:#F87171;box-shadow:0 0 6px #F87171;"></div>
+          <span class="rule-name">Port Scan Detection</span>
+          <span class="rule-mitre">T1046 · Discovery</span>
+        </div>
+        <p class="rule-desc">Identifies hosts performing automated reconnaissance by counting how many unique destination ports a single source IP contacts within a 60-second window. When that count exceeds the threshold, ForensiQ flags the source as a scanner. This covers both horizontal scans (one host, many targets) and vertical scans (one target, many ports).</p>
+        <div class="rule-signals">
+          <div class="rule-signal">Source IP contacts ≥ <strong>15 unique ports</strong> within a 60-second window (configurable)</div>
+          <div class="rule-signal">Evidence includes the full sorted port list, duration, and packet count</div>
+          <div class="rule-signal">File: <code>detection/rules/port_scan.py</code></div>
+        </div>
+      </div>
+
+      <div id="rule-brute" class="rule-card">
+        <div class="rule-card-header">
+          <div class="rule-sev" style="background:#FB923C;box-shadow:0 0 6px #FB923C;"></div>
+          <span class="rule-name">Brute Force Detection</span>
+          <span class="rule-mitre">T1110 · Credential Access</span>
+        </div>
+        <p class="rule-desc">Detects repeated authentication attempts from a single source to the same destination port. Brute force tools like Hydra and Medusa generate many short-lived flows to the same endpoint — a pattern that normal user behavior never produces.</p>
+        <div class="rule-signals">
+          <div class="rule-signal">Same source → destination:port pair seen ≥ <strong>20 times</strong> within 60 seconds</div>
+          <div class="rule-signal">Each flow has ≤ 3 packets (typical of rejected authentication)</div>
+          <div class="rule-signal">Covers SSH (22), RDP (3389), FTP (21), Telnet (23), SMTP (25)</div>
+          <div class="rule-signal">File: <code>detection/rules/brute_force.py</code></div>
+        </div>
+      </div>
+
+      <div id="rule-c2" class="rule-card">
+        <div class="rule-card-header">
+          <div class="rule-sev" style="background:#F87171;box-shadow:0 0 6px #F87171;"></div>
+          <span class="rule-name">C2 Beacon Detection</span>
+          <span class="rule-mitre">T1071 · Command &amp; Control</span>
+        </div>
+        <p class="rule-desc">Looks for implant check-in traffic — the telltale regular heartbeat that malware sends back to its command-and-control server. Real user traffic is bursty and irregular. Malware beacons are systematic. ForensiQ measures the variance in timing between repeated connections to the same external host.</p>
+        <div class="rule-signals">
+          <div class="rule-signal">≥ <strong>5 connections</strong> to the same destination IP</div>
+          <div class="rule-signal">Interval jitter (standard deviation / mean) below <strong>50%</strong> tolerance</div>
+          <div class="rule-signal">Interval between connections between 5 seconds and 1 hour</div>
+          <div class="rule-signal">File: <code>detection/rules/beaconing.py</code></div>
+        </div>
+      </div>
+
+      <div id="rule-exfil" class="rule-card">
+        <div class="rule-card-header">
+          <div class="rule-sev" style="background:#FB923C;box-shadow:0 0 6px #FB923C;"></div>
+          <span class="rule-name">Data Exfiltration</span>
+          <span class="rule-mitre">T1020 · Impact</span>
+        </div>
+        <p class="rule-desc">Flags flows where a significant amount of data is transferred to an external (non-RFC1918) IP address. Used to catch both large bulk transfers and sustained low-and-slow exfiltration over time.</p>
+        <div class="rule-signals">
+          <div class="rule-signal">Outbound flow transferring ≥ <strong>10 KB</strong> to a public IP address (configurable)</div>
+          <div class="rule-signal">Private IPs (10.x, 172.16.x, 192.168.x) are excluded from flagging</div>
+          <div class="rule-signal">Evidence includes exact bytes transferred, destination IP, and throughput</div>
+          <div class="rule-signal">File: <code>detection/rules/exfiltration.py</code></div>
+        </div>
+      </div>
+
+      <div id="rule-dns" class="rule-card">
+        <div class="rule-card-header">
+          <div class="rule-sev" style="background:#FBBF24;box-shadow:0 0 6px #FBBF24;"></div>
+          <span class="rule-name">DNS Tunneling</span>
+          <span class="rule-mitre">T1071.004 · C2 via DNS</span>
+        </div>
+        <p class="rule-desc">DNS tunneling tools like iodine and dnscat2 encode data into subdomain labels to bypass firewalls that only allow DNS traffic. The result is DNS queries with unusually long names — far longer than any legitimate hostname. ForensiQ flags these by checking query length.</p>
+        <div class="rule-signals">
+          <div class="rule-signal">DNS query label exceeds <strong>52 characters</strong> in length</div>
+          <div class="rule-signal">Or total query length exceeds <strong>100 characters</strong></div>
+          <div class="rule-signal">Evidence includes the full query string for investigation</div>
+          <div class="rule-signal">File: <code>detection/rules/dns_tunnel.py</code></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ CONFIGURATION ═══════════ -->
+    <div class="doc-section" id="config">
+      <h1>Configuration</h1>
+      <p>All thresholds, limits, and API settings live in <code>config.py</code>. You never need to touch individual rule files — change a number here and it applies everywhere.</p>
+
+      <h2 id="env">Environment Variables</h2>
+      <p>API keys are loaded from <code>.env</code> via <code>python-dotenv</code>. None of them are required — the tool runs without them with reduced functionality.</p>
+
+      <table class="cfg-table">
+        <thead><tr><th>Key</th><th>Required</th><th>Effect when missing</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="cfg-key">VIRUSTOTAL_API_KEY</td>
+            <td><span class="badge badge-opt">Optional</span></td>
+            <td class="cfg-desc">IOC enrichment is skipped. Findings still appear but without VT reputation scores.</td>
+          </tr>
+          <tr>
+            <td class="cfg-key">GROQ_API_KEY</td>
+            <td><span class="badge badge-opt">Optional</span></td>
+            <td class="cfg-desc">AI explanations are disabled. Reports still contain all evidence — just no plain-English write-up.</td>
+          </tr>
+          <tr>
+            <td class="cfg-key">OTX_API_KEY</td>
+            <td><span class="badge badge-opt">Optional</span></td>
+            <td class="cfg-desc">AlienVault OTX enrichment is skipped. Not used in the current pipeline version.</td>
+          </tr>
+          <tr>
+            <td class="cfg-key">LOG_LEVEL</td>
+            <td><span class="badge badge-opt">Optional</span></td>
+            <td class="cfg-desc">Defaults to <code>INFO</code>. Set to <code>DEBUG</code> for verbose packet-level logging.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="thresholds">Detection Thresholds</h2>
+      <p>These are the numbers that control when a rule fires. Raise them to reduce false positives on noisy networks. Lower them to catch subtler attacks.</p>
+
+      <table class="cfg-table">
+        <thead><tr><th>Variable</th><th>Default</th><th>What it controls</th></tr></thead>
+        <tbody>
+          <tr><td class="cfg-key">PORT_SCAN_THRESHOLD</td><td class="cfg-val">15</td><td class="cfg-desc">Minimum unique ports a host must scan before triggering an alert</td></tr>
+          <tr><td class="cfg-key">PORT_SCAN_WINDOW_SECONDS</td><td class="cfg-val">60</td><td class="cfg-desc">Time window for counting port scan activity</td></tr>
+          <tr><td class="cfg-key">BRUTE_FORCE_THRESHOLD</td><td class="cfg-val">20</td><td class="cfg-desc">Minimum failed connection attempts to flag brute force</td></tr>
+          <tr><td class="cfg-key">BRUTE_FORCE_WINDOW_SECONDS</td><td class="cfg-val">60</td><td class="cfg-desc">Time window for counting brute force attempts</td></tr>
+          <tr><td class="cfg-key">BEACON_MIN_CONNECTIONS</td><td class="cfg-val">5</td><td class="cfg-desc">Minimum connections to the same host before checking for beacon pattern</td></tr>
+          <tr><td class="cfg-key">BEACON_INTERVAL_TOLERANCE</td><td class="cfg-val">0.50</td><td class="cfg-desc">Maximum allowed timing jitter (50% = very relaxed, catches irregular beacons)</td></tr>
+          <tr><td class="cfg-key">EXFIL_BYTES_THRESHOLD</td><td class="cfg-val">10 240</td><td class="cfg-desc">Minimum bytes in a single outbound flow to flag exfiltration (10 KB default)</td></tr>
+          <tr><td class="cfg-key">DNS_TUNNEL_LABEL_LENGTH</td><td class="cfg-val">52</td><td class="cfg-desc">Maximum allowed DNS label length before flagging as tunnel</td></tr>
+          <tr><td class="cfg-key">MAX_FILE_SIZE_BYTES</td><td class="cfg-val">500 MB</td><td class="cfg-desc">Maximum PCAP file size accepted by the validator</td></tr>
+          <tr><td class="cfg-key">MAX_PACKETS</td><td class="cfg-val">5 000 000</td><td class="cfg-desc">Hard cap on packets processed — prevents OOM on huge captures</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ WEB UI ═══════════ -->
+    <div class="doc-section" id="webui">
+      <h1>Web Interface</h1>
+      <p>The web interface is built with Flask and plain HTML/CSS/JavaScript. No frontend framework, no build step. Start it with one command and it works in any browser.</p>
+
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+        <pre>python app.py
+# → http://localhost:5001</pre>
+      </div>
+
+      <h3>Uploading a file</h3>
+      <p>The landing page shows a drag-and-drop upload zone. You can drag a <code>.pcap</code> or <code>.pcapng</code> file directly from your file manager, or click the zone to open a file picker. Files up to 100 MB are accepted.</p>
+
+      <h3>Live progress</h3>
+      <p>Once the file is submitted, the page switches to a progress view. Each of the 6 pipeline steps lights up as it completes — validated with a green checkmark, currently running with a spinner, pending in grey. The backend sends these updates over a <strong>Server-Sent Events (SSE)</strong> stream, so the page updates in real time without polling.</p>
+
+      <h3>Reading the results</h3>
+      <p>When analysis completes, the results render in-place:</p>
+      <ul style="color:var(--tx2);font-size:0.86rem;line-height:2;padding-left:20px;margin-bottom:14px;">
+        <li><strong style="color:var(--tx);">Severity summary</strong> — a row of chips showing how many findings at each severity level</li>
+        <li><strong style="color:var(--tx);">Metrics bar</strong> — flows, packets, bytes, finding count, analysis duration</li>
+        <li><strong style="color:var(--tx);">Findings accordion</strong> — each finding is a collapsible card. Click to expand for the flow diagram, evidence table, port heatmap, AI explanation, and IOC list</li>
+        <li><strong style="color:var(--tx);">IOC table</strong> — deduplicated list of all indicators with VirusTotal scores</li>
+        <li><strong style="color:var(--tx);">Download buttons</strong> — PDF report and raw JSON</li>
+      </ul>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ CLI ═══════════ -->
+    <div class="doc-section" id="cli">
+      <h1>CLI Usage</h1>
+      <p>The command-line interface runs the same full pipeline as the web interface — validate, parse, detect, enrich, explain, report — and prints structured output to your terminal.</p>
+
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+        <pre>python3 main.py &lt;path_to_pcap&gt;
+
+# Examples
+python3 main.py capture.pcap
+python3 main.py /home/user/incident/traffic.pcapng
+python3 main.py tests/portscan.pcap</pre>
+      </div>
+
+      <h3>Output files</h3>
+      <p>Reports are written to the <code>outputs/</code> directory. The filename is derived from the input PCAP name:</p>
+
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+        <pre>outputs/
+  capture_report.pdf    # Full forensic PDF report
+  capture_report.json   # Structured JSON data</pre>
+      </div>
+
+      <h3>Running tests</h3>
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+        <pre># Run all tests
+pytest tests/
+
+# Run a specific test file
+pytest tests/test_rules.py
+
+# Run a specific test
+pytest tests/test_rules.py::TestPortScanRule::test_detects_scan
+
+# With coverage
+pytest tests/ --cov=. --cov-report=term-missing</pre>
+      </div>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ API ═══════════ -->
+    <div class="doc-section" id="api">
+      <h1>API Reference</h1>
+      <p>The Flask server exposes four endpoints. All are used internally by the web interface, but you can call them directly from scripts or other tools.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-head">
+          <span class="method method-post">POST</span>
+          <span class="endpoint-path">/analyze</span>
+          <span class="endpoint-desc">Submit a PCAP for analysis</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Accepts a <code>multipart/form-data</code> request with a <code>file</code> field containing the PCAP. Saves the file to a temp location, starts the pipeline in a background thread, and immediately returns a job ID.</p>
+          <div class="code-block">
+            <div class="code-block-header"><span class="code-block-lang">bash</span><span class="code-block-title">Example request</span></div>
+            <pre>curl -X POST http://localhost:5001/analyze \
+  -F "file=@capture.pcap"</pre>
+          </div>
+          <div class="code-block">
+            <div class="code-block-header"><span class="code-block-lang">json</span><span class="code-block-title">Response</span></div>
+            <pre>{ "job_id": "b4cad49f-1a2b-3c4d-5e6f-7890abcdef12" }</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/stream/:job_id</span>
+          <span class="endpoint-desc">Server-Sent Events progress stream</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Opens an SSE stream for the given job. The server sends one event per pipeline step, and a final <code>complete</code> event with the full results payload when analysis finishes.</p>
+          <div class="code-block">
+            <div class="code-block-header"><span class="code-block-lang">text</span><span class="code-block-title">Event format</span></div>
+            <pre>data: {"event": "step", "data": {"step": 3, "status": "done", "label": "Detection complete", "detail": "2 finding(s)"}}
+
+data: {"event": "complete", "data": {"job_id": "...", "filename": "capture.pcap", "findings": [...], ...}}
+
+data: {"event": "error", "data": {"message": "Failed to parse PCAP: ..."}}
+</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/download/:job_id/pdf</span>
+          <span class="endpoint-desc">Download the PDF report</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Returns the generated PDF as a file download. Only available after the <code>complete</code> SSE event has been received. Returns <code>404</code> if the job doesn't exist or analysis is still running.</p>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-head">
+          <span class="method method-get">GET</span>
+          <span class="endpoint-path">/download/:job_id/json</span>
+          <span class="endpoint-desc">Download the JSON report</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Returns the full analysis report as a JSON file. Contains the same data as the PDF but in machine-readable form — useful for feeding into SIEMs, ticketing systems, or further automation.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ REPORTS ═══════════ -->
+    <div class="doc-section" id="reports">
+      <h1>Reports</h1>
+      <p>Every analysis produces two output files: a professional PDF and a structured JSON file.</p>
+
+      <h2 id="pdf">PDF Structure</h2>
+      <p>The PDF is built with ReportLab and follows a consistent 6-page structure regardless of how many findings there are.</p>
+
+      <table class="doc-table">
+        <thead><tr><th>Page</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td>1 — Title Page</td><td>ForensiQ logo, filename, SHA-256 hash, analysis timestamp, analyst name, severity summary</td></tr>
+          <tr><td>2 — Executive Summary</td><td>Risk assessment, severity pie chart, finding counts, top IOCs at a glance</td></tr>
+          <tr><td>3+ — Finding Detail</td><td>One section per finding: severity header, network flow diagram, evidence table, port heatmap (if applicable), VT badge, AI explanation, remediation steps</td></tr>
+          <tr><td>— — IOC Table</td><td>Deduplicated table of all indicators across all findings with VirusTotal scores</td></tr>
+          <tr><td>— — Chain of Custody</td><td>File hash, tool version, analysis timeline, validity statement for legal proceedings</td></tr>
+          <tr><td>— — Appendix</td><td>MITRE technique reference, severity definitions, tool information</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <span class="callout-icon">📄</span>
+        <div class="callout-body">
+          <strong>CONFIDENTIAL watermark</strong>
+          Every page includes a diagonal CONFIDENTIAL watermark rendered via canvas rotation. This can be removed or changed in <code>output/report.py</code> in the <code>_draw_watermark()</code> function.
+        </div>
+      </div>
+
+      <h2 id="json">JSON Format</h2>
+      <p>The JSON report mirrors the <code>AnalysisReport</code> dataclass structure. Here's a condensed example:</p>
+
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">json</span><span class="code-block-title">outputs/capture_report.json</span></div>
+        <pre>{
+  "pcap_filename": "capture.pcap",
+  "pcap_hash": "e87e460a0c163bb9...",
+  "analysis_start": "2026-05-17T00:03:46",
+  "analysis_end":   "2026-05-17T00:03:49",
+  "duration_seconds": 3.1,
+  "total_flows": 131,
+  "total_packets": 3678,
+  "total_bytes": 2409151,
+  "findings": [
+    {
+      "rule_name": "DATA_EXFILTRATION_DETECTED",
+      "severity": "CRITICAL",
+      "title": "Data Exfiltration: 172.245.26.145 → 10.0.0.147",
+      "src_ip": "172.245.26.145",
+      "dst_ip": "10.0.0.147",
+      "mitre_technique": "T1020",
+      "mitre_tactic": "Impact",
+      "evidence": {
+        "source_ip": "172.245.26.145",
+        "bytes_transferred": 1447585,
+        "duration_seconds": 109.72
+      },
+      "iocs": [
+        {
+          "value": "172.245.26.145",
+          "ioc_type": "ip",
+          "vt_score": "2/92",
+          "malicious": true
+        }
+      ],
+      "explanation": "What happened:\n..."
+    }
+  ]
+}</pre>
+      </div>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ ADDING A RULE ═══════════ -->
+    <div class="doc-section" id="addrule">
+      <h1>Adding a Detection Rule</h1>
+      <p>ForensiQ is designed to be extended. Adding a new detection rule takes about 15 minutes and requires touching exactly two files.</p>
+
+      <h3>Step 1 — Create the rule file</h3>
+      <p>Create a new file in <code>detection/rules/</code>. Copy this template:</p>
+
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">python</span><span class="code-block-title">detection/rules/my_rule.py</span></div>
+        <pre><span class="k">from</span> typing <span class="k">import</span> List
+<span class="k">from</span> core.models <span class="k">import</span> Flow, Finding, Severity, RuleCategory
+<span class="k">from</span> detection.rules.base_rule <span class="k">import</span> BaseRule
+<span class="k">import</span> config
+
+<span class="k">class</span> <span class="n">MyRule</span>(BaseRule):
+    rule_name   = <span class="s">"MY_RULE_NAME"</span>
+    description = <span class="s">"One sentence describing what this rule detects."</span>
+
+    <span class="k">def</span> <span class="n">detect</span>(self, flows: List[Flow]) -> List[Finding]:
+        findings = []
+
+        <span class="k">for</span> flow <span class="k">in</span> flows:
+            <span class="c"># Your detection logic here</span>
+            <span class="k">if</span> self._is_suspicious(flow):
+                findings.append(Finding(
+                    rule_name       = self.rule_name,
+                    severity        = Severity.HIGH,
+                    category        = RuleCategory.RECONNAISSANCE,
+                    title           = <span class="s">f"My Rule: {flow.src_ip} → {flow.dst_ip}"</span>,
+                    description     = <span class="s">"Describe what was found in plain English."</span>,
+                    evidence        = {
+                        <span class="s">"src_ip"</span>: flow.src_ip,
+                        <span class="s">"dst_ip"</span>: flow.dst_ip,
+                        <span class="cm"># Add as many key-value pairs as useful</span>
+                    },
+                    src_ip          = flow.src_ip,
+                    dst_ip          = flow.dst_ip,
+                    timestamp       = flow.first_seen,
+                    mitre_technique = <span class="s">"T1234"</span>,
+                    mitre_tactic    = <span class="s">"Tactic Name"</span>,
+                ))
+
+        <span class="k">return</span> findings
+
+    <span class="k">def</span> <span class="n">_is_suspicious</span>(self, flow: Flow) -> bool:
+        <span class="c"># Implement your logic</span>
+        <span class="k">return</span> False</pre>
+      </div>
+
+      <div class="callout warning">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body">
+          <strong>Never call <code>detect()</code> directly</strong>. Always call <code>execute()</code> when invoking a rule — it wraps <code>detect()</code> with error isolation and logging. The engine handles this for you automatically.
+        </div>
+      </div>
+
+      <h3>Step 2 — Register the rule</h3>
+      <p>Open <code>detection/engine.py</code> and add your rule to the <code>__init__</code> method:</p>
+
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">python</span><span class="code-block-title">detection/engine.py</span></div>
+        <pre><span class="k">from</span> detection.rules.my_rule <span class="k">import</span> MyRule
+
+<span class="k">class</span> <span class="n">DetectionEngine</span>:
+    <span class="k">def</span> <span class="n">__init__</span>(self):
+        self.rules = [
+            PortScanRule(),
+            BruteForceRule(),
+            BeaconingRule(),
+            ExfiltrationRule(),
+            DnsTunnelRule(),
+            MyRule(),   <span class="c"># ← add here</span>
+        ]</pre>
+      </div>
+
+      <p>That's it. Your rule will now run on every analysis, its failures will be isolated from other rules, and its findings will appear in both the web UI and the PDF report.</p>
+    </div>
+
+    <hr class="doc-divider"/>
+
+    <!-- ═══════════ TROUBLESHOOTING ═══════════ -->
+    <div class="doc-section" id="troubleshoot">
+      <h1>Troubleshooting</h1>
+
+      <h3>0 findings on a real threat PCAP</h3>
+      <p>The most common cause is thresholds being too high. Real malware traffic often involves smaller transfers and less regular timing than the defaults assume. Try lowering <code>EXFIL_BYTES_THRESHOLD</code> to <code>10 * 1024</code> and relaxing <code>BEACON_INTERVAL_TOLERANCE</code> to <code>0.5</code> in <code>config.py</code>.</p>
+
+      <h3>VirusTotal returning no scores</h3>
+      <p>Check that your <code>VIRUSTOTAL_API_KEY</code> is set correctly in <code>.env</code>. The free tier allows 4 requests per minute — if you're analyzing a PCAP with many external IPs, the enricher will rate-limit itself and take longer. All results are cached so subsequent analyses of the same IPs are instant.</p>
+
+      <h3>AI explanations not appearing</h3>
+      <p>ForensiQ requires a <code>GROQ_API_KEY</code> to generate explanations. Get a free key at <a href="https://console.groq.com">console.groq.com</a>. If the key is set but explanations still don't appear, check <code>logs/forensiq.log</code> for rate limit errors — the free tier has token-per-minute limits.</p>
+
+      <h3>Port 5001 already in use</h3>
+      <div class="code-block">
+        <div class="code-block-header"><span class="code-block-lang">bash</span></div>
+        <pre># Find and kill the process using port 5001
+lsof -ti:5001 | xargs kill -9</pre>
+      </div>
+
+      <h3>Scapy TLS cipher warnings</h3>
+      <p>Messages like <code>TLS cipher suite not usable. Is the cryptography Python module installed?</code> are harmless warnings from Scapy. They appear when analyzing captures that contain TLS traffic and the <code>cryptography</code> package isn't installed. Install it with <code>pip install cryptography</code> to silence them.</p>
+
+      <h3>Large PCAP files are slow</h3>
+      <p>ForensiQ is designed to handle multi-GB files, but parsing millions of packets takes time. The <code>MAX_PACKETS</code> config limits processing to 5 million packets by default — any packets beyond that are ignored. Reduce this limit in <code>config.py</code> if you need faster results on large captures.</p>
+
+      <div class="callout tip">
+        <span class="callout-icon">📋</span>
+        <div class="callout-body">
+          <strong>Check the logs</strong>
+          All activity is logged to <code>logs/forensiq.log</code>. Set <code>LOG_LEVEL=DEBUG</code> in your <code>.env</code> file for packet-level detail that makes it easy to trace exactly why a rule did or didn't fire.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /layout -->
+
+<script>
+  // Highlight active sidebar link on scroll
+  const sections = document.querySelectorAll('[id]');
+  const links    = document.querySelectorAll('.sb-link');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sb-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -75% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
