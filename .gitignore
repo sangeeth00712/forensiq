@@ -34,3 +34,6 @@ htmlcov/
 .idea/
 *.swp
 *.swo
+
+# Packet captures - sample PCAPs kept locally, not in the repo
+*.pcap
